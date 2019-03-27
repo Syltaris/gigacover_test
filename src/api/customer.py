@@ -33,19 +33,31 @@ class Customer(object):
         self.session.commit()
         resp.body = json.dumps(customer.to_json(), ensure_ascii=False)
 
-    def on_put(self, req, resp):
-        doc = {
-            'sg': 'oof'
-        }
-        resp.body = json.dumps(doc, ensure_ascii=False)
-        resp.status = falcon.HTTP_200
+    def on_put(self, req, resp, id):
+        if id is None:
+            resp.status = falcon.HTTP_400
+            return
+        data = json.loads(req.stream.read())
+        customer = self.session.query(CustomerSchema).filter(CustomerSchema.id == id).first()
+        name = customer.name
+        dob = customer.dob
 
-    def on_delete(self, req, resp):
-        doc = {
-            'sg': 'owie'
-        }
-        resp.body = json.dumps(doc, ensure_ascii=False)
-        resp.status = falcon.HTTP_200
+        if 'name' in data:
+            name = data['name']
+        if 'dob' in data:
+            dob = datetime.strptime(data['dob'], '%a %b %d %Y %H:%M:%S %Z%z')
+
+        new_data = dict(name=name, dob=dob)
+        self.session.query(CustomerSchema).filter(CustomerSchema.id == id).update(new_data)
+        self.session.commit()
+
+    def on_delete(self, req, resp, id):
+        if id is None:
+            resp.status = falcon.HTTP_400
+            return
+        self.session.query(CustomerSchema).filter(CustomerSchema.id==id).delete()
+        self.session.commit()
+
 
     def retrieve_all_users(self):
         return self.session.query(CustomerSchema).all()

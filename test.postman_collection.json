@@ -1,0 +1,109 @@
+{
+	"info": {
+		"_postman_id": "789cbe92-ece9-446d-ab38-354717e55574",
+		"name": "test",
+		"description": "Postman test collection for GigaCover backend API test.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "http://localhost:8000/customer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"test\",\n\t\"dob\": \"Wed Mar 27 2019 15:56:02 GMT+0800\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/customer",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"customer"
+					]
+				},
+				"description": "Adds new customer to db. Accepts json with specified 'name' and 'dob' fields."
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8000/customer/2",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8000/customer/2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"customer",
+						"2"
+					]
+				},
+				"description": "Retrieves all customers from db. Specify the id after the URI, i.e., '../customer/{id}'."
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8000/customer/2",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"that's it\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/customer/2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"customer",
+						"2"
+					]
+				},
+				"description": "Update customer's name/dob."
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8000/customer/2",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8000/customer/2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"customer",
+						"2"
+					]
+				},
+				"description": "Deletes customer by id."
+			},
+			"response": []
+		}
+	]
+}
