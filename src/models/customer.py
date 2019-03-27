@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, DateTime
 from .base import Base
+from datetime import datetime
 
 class Customer(Base):
   """
@@ -17,5 +18,10 @@ class Customer(Base):
   dob = Column(DateTime)
   updated_at = Column(DateTime)
 
-  def __repr___(self):
-      return "<Customer(name='%s', dob='%s')>" % (self.name, self.dob)
+  def __init__(self, name, dob):
+    self.name = name
+    self.dob = dob
+    self.updated_at = datetime.now()
+
+  def to_json(self):
+    return dict(id=self.id, name=self.name, dob=str(self.dob), updated_at=str(self.updated_at))

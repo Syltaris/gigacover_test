@@ -1,24 +1,31 @@
 import falcon
 import json
-from models import customer as CustomerSchema
+from datetime import datetime
+from models.customer import Customer as CustomerSchema
 
 class Customer(object):
     """
     API object interfaces with PostgreSQL db to do CRUD ops on customer table.
     """
-    def __init__(self, db_cur):
-        self.db_cur = db_cur
+    def __init__(self, session):
+        self.session = session()
     
     def __del__(self):
-        if not self.db_cur.closed:
-            self.db_cur.close()
+        self.session.close()
 
     def on_get(self, req, resp):
-        doc = {
-            'sg': 'eek'
-        }
-        resp.body = json.dumps(doc, ensure_ascii=False)
-        resp.status = falcon.HTTP_200
+        customers = self.retrieve_all_users()
+        payload = list(map(lambda x: x.to_json(), customers))
+        resp.body = json.dumps(payload, ensure_ascii=False)
+
+    def on_post(self, req, resp):
+        data = json.loads(req.stream.read())
+        dob = datetime.strptime(data['dob'], '%a %b %d %Y %H:%M:%S %Z%z')
+        customer = CustomerSchema(name=data['name'], dob=dob)
+        self.session.add(customer)
+        self.session.commit()
+
+        resp.body = json.dumps(customer.to_json(), ensure_ascii=False)
 
     def on_put(self, req, resp):
         doc = {
@@ -34,11 +41,6 @@ class Customer(object):
         resp.body = json.dumps(doc, ensure_ascii=False)
         resp.status = falcon.HTTP_200
 
-    def on_post(self, req, resp):
-        #self.cur.execute("CREATE TABLE test (id serial PRIMARY KEY, num integer, data varchar);")
-        #self.cur.commit()
-        doc = {
-            'sg': 'ah'
-        }
-        resp.body = json.dumps(doc, ensure_ascii=False)
-        resp.status = falcon.HTTP_200
+    def retrieve_all_users(self):
+        return self.session.query(CustomerSchema).all()
+        

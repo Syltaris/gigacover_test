@@ -1,6 +1,7 @@
 import falcon
 import psycopg2
 from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 from api import customer as customer
 from models.base import Base
 
@@ -14,7 +15,8 @@ It is more preferable to put these into a .env file to be supplied by each indiv
 api = falcon.API()
 #conn = psycopg2.connect("dbname=testdb user=postgres")
 engine = create_engine("postgresql+psycopg2://postgres:postgres@localhost/testdb", echo=True)
+Session = sessionmaker(bind=engine)
 conn = engine.connect()
-api.add_route('/customer', customer.Customer(conn))
+api.add_route('/customer', customer.Customer(Session))
 
 Base.metadata.create_all(engine)
