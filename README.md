@@ -30,3 +30,19 @@ Run `\q` in psql to exit the shell.
 # Execution
 
 The backend server is hosted using `gunicorn` by running `gunicorn main:api` in the `./src` directory.
+
+# Testing
+
+Methods:
+
+`GET /customer/{id}`
+Specify the id of the customer to retrieve a specific field.
+
+`POST /customer`
+Make a post request with the payload that includes `name` and `dob` in the string format of "%a %b %d %Y %H:%M:%S %Z%z" e.g. "Wed Mar 27 2019 15:56:02 GMT+0800"
+
+`PUT /customer/{id}`
+Updates customer data with either `name` or `dob` or both params specified in the payload.
+
+`DEL /customer/{id}`
+Deletes customer from db specified by id.
