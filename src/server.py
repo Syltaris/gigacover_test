@@ -17,6 +17,6 @@ api = falcon.API()
 engine = create_engine("postgresql+psycopg2://postgres:postgres@localhost/testdb", echo=True)
 Session = sessionmaker(bind=engine)
 conn = engine.connect()
-api.add_route('/customer', customer.Customer(Session))
+api.add_route('/customer/{id}', customer.Customer(Session))
 
 Base.metadata.create_all(engine)

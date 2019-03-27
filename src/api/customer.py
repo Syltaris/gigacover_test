@@ -13,9 +13,16 @@ class Customer(object):
     def __del__(self):
         self.session.close()
 
-    def on_get(self, req, resp):
-        customers = self.retrieve_all_users()
-        payload = list(map(lambda x: x.to_json(), customers))
+    def on_get(self, req, resp, id=None):
+        if id is None:
+            resp.status = falcon.HTTP_400
+            return
+        customer = self.session.query(CustomerSchema).filter(CustomerSchema.id == id).first()
+        if customer is None:
+            resp.body = "Customer not found"
+            return
+        payload = customer.to_json()
+       
         resp.body = json.dumps(payload, ensure_ascii=False)
 
     def on_post(self, req, resp):
@@ -24,7 +31,6 @@ class Customer(object):
         customer = CustomerSchema(name=data['name'], dob=dob)
         self.session.add(customer)
         self.session.commit()
-
         resp.body = json.dumps(customer.to_json(), ensure_ascii=False)
 
     def on_put(self, req, resp):
